@@ -2,12 +2,27 @@ package fr.bloome.spacecheckers;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Hashtable;
 
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel{
 	
 	public GamePanel() {
+		this.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				Hashtable<Integer, Pion> pionList = PionManager.getPions();
+				for(int i = 0;i<pionList.size();i++) {
+					int x = pionList.get(i).getPosX()*48 +10;
+					int y = pionList.get(i).getPosY()*48 +110;
+					if(e.getX() > x && e.getX() < x + 48 && e.getY() > y && e.getY() < y + 48) {
+						PionManager.preMove(i);
+					}
+				}
+			}
+		});
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -35,6 +50,13 @@ public class GamePanel extends JPanel{
 				}
 				squarePosY += 48;
 			}
+		}
+		//Dessin des pions
+		Hashtable<Integer, Pion> pionList = PionManager.getPions();
+		
+		for(int i = 0;i<pionList.size();i++) {
+			g.setColor(pionList.get(i).getColor());
+			g.fillOval(pionList.get(i).getPosX()*48 + 10, pionList.get(i).getPosY() *48 +110, 48, 48);
 		}
 	}
 }
